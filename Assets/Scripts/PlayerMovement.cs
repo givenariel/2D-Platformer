@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed, jumpForce, groundDetectlength;
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Transform groundDetect;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private int jumpCount;
     private float moveInput;
     private Vector2 inputValue;
     private RaycastHit2D hit;
@@ -16,12 +17,18 @@ public class PlayerMovement : MonoBehaviour
         inputActions = new IA_Player();
         inputActions.Player.Movement.Enable();
         inputActions.Player.Jump.Enable();
+        inputActions.Player.Jump.performed += Jump;
     }
 
     private void Update()
     {
         InputHandler();
         Movement();
+        
+        if (Grounded())
+        {
+            jumpCount = 0;
+        }
     }
 
     void InputHandler()
@@ -35,15 +42,19 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocityY);
     }
 
-    void Jump()
+    void Jump(InputAction.CallbackContext context)
     {
-        rb.AddForceY(jumpForce);
+        if (context.performed && jumpCount < 1)
+        {
+            rb.AddForceY(jumpForce, ForceMode2D.Impulse);
+            jumpCount++;
+        }
     }
 
     private bool Grounded()
     {
         hit = Physics2D.Raycast(gameObject.transform.position, -gameObject.transform.up, groundDetectlength, groundLayer);
-        Debug.DrawRay(groundDetect.position, -groundDetect.up, Color.green);
+        Debug.DrawRay(gameObject.transform.position, -gameObject.transform.up, Color.green);
         if (hit)
         {
             return true;
