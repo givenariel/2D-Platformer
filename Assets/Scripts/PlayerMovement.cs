@@ -7,44 +7,36 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private int jumpCount;
-    private float moveInput;
-    private Vector2 inputValue;
+    private Vector2 moveInput;
     private RaycastHit2D hit;
-    IA_Player inputActions;
-
-    private void Start()
-    {
-        inputActions = new IA_Player();
-        inputActions.Player.Movement.Enable();
-        inputActions.Player.Jump.Enable();
-        inputActions.Player.Jump.performed += Jump;
-    }
+    float horizontalInput;
 
     private void Update()
     {
-        InputHandler();
-        Movement();
-        
+        Grounded();
+        Flip();
+
         if (Grounded())
         {
             jumpCount = 0;
         }
+
     }
 
-    void InputHandler()
+    void FixedUpdate()
     {
-        inputValue = inputActions.Player.Movement.ReadValue<Vector2>();
-        moveInput = inputValue.x;
+        horizontalInput = moveInput.x;
+        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocityY);
     }
 
-    void Movement()
+    private void OnMovement(InputValue inputValue)
     {
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocityY);
+        moveInput = inputValue.Get<Vector2>();
     }
 
-    void Jump(InputAction.CallbackContext context)
+    private void OnJump()
     {
-        if (context.performed && jumpCount < 1)
+        if (jumpCount < 1)
         {
             rb.AddForceY(jumpForce, ForceMode2D.Impulse);
             jumpCount++;
@@ -62,6 +54,18 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    private void Flip()
+    {
+        if (horizontalInput > 0)
+        {
+            transform.localScale = new Vector2(1, 1);
+        }
+        else if (horizontalInput < 0)
+        {
+            transform.localScale = new Vector2(-1, 1);
         }
     }
 }
