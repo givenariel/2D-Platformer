@@ -6,12 +6,12 @@ public class playerController : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 10f,
     jumpForce = 6f,
-    groundDetectLength = 1.5f;
+    groundDetectLength = 1.5f,
+    sprintMultiplier = 2f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private int jumpCount;
     [SerializeField] private Transform groundDetect;
-    private Vector2 moveInput;
     private RaycastHit2D hit;
     float horizontalInput;
     IA_Player inputActions;
@@ -20,12 +20,18 @@ public class playerController : MonoBehaviour
     {
         inputActions = new IA_Player();
         inputActions.Player.Movement.Enable();
+        inputActions.Player.Sprint.Enable();
+        inputActions.Player.Sprint.performed += Sprint;
+        inputActions.Player.Jump.Enable();
         inputActions.Player.Jump.performed += Jump;
     }
 
     void OnDisable()
     {
         inputActions.Player.Movement.Disable();
+        inputActions.Player.Sprint.Disable();
+        inputActions.Player.Sprint.performed -= Sprint;
+        inputActions.Player.Jump.Disable();
         inputActions.Player.Jump.performed -= Jump;
     }
 
@@ -51,11 +57,19 @@ public class playerController : MonoBehaviour
         rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocityY);
     }
 
+    private void Sprint(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            moveSpeed *= sprintMultiplier;
+        }
+    }
+
     private void Jump(InputAction.CallbackContext ctx)
     {
         if (ctx.performed && jumpCount < 2)
         {
-            rb.AddForceY(jumpForce);
+            rb.AddForceY(jumpForce, ForceMode2D.Impulse);
             jumpCount++;
         }
     }
