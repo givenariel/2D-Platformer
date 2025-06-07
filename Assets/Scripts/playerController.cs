@@ -12,6 +12,7 @@ public class playerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private int jumpCount;
     [SerializeField] private Transform groundDetect;
+    [SerializeField] private int playerHP = 4;
     private RaycastHit2D hit;
     float horizontalInput;
     IA_Player inputActions;
@@ -58,9 +59,9 @@ public class playerController : MonoBehaviour
         }
         else
         {
-            rb.linearVelocity = new Vector2(horizontalInput * sprintSpeed, rb.linearVelocityY); 
+            rb.linearVelocity = new Vector2(horizontalInput * sprintSpeed, rb.linearVelocityY);
         }
-        
+
     }
 
     private bool isSprinting()
@@ -113,5 +114,17 @@ public class playerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Debug.DrawRay(groundDetect.position, -groundDetect.up, Color.red);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("obstacle"))
+        {
+            playerHP -= 1;
+        }
+        if (collision.collider.CompareTag("healing"))
+        {
+            playerHP += 1;
+        }
     }
 }
