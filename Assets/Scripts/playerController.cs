@@ -14,6 +14,20 @@ public class playerController : MonoBehaviour
     private Vector2 moveInput;
     private RaycastHit2D hit;
     float horizontalInput;
+    IA_Player inputActions;
+
+    private void OnEnable()
+    {
+        inputActions = new IA_Player();
+        inputActions.Player.Movement.Enable();
+        inputActions.Player.Jump.performed += Jump;
+    }
+
+    void OnDisable()
+    {
+        inputActions.Player.Movement.Disable();
+        inputActions.Player.Jump.performed -= Jump;
+    }
 
     private void Update()
     {
@@ -24,30 +38,22 @@ public class playerController : MonoBehaviour
         {
             jumpCount = 0;
         }
-        // if (!Grounded())
-        // {
-        //     rb.gravityScale = 7;
-        // }
-        // else
-        // {
-        //     rb.gravityScale = 1;
-        // }
     }
 
     void FixedUpdate()
     {
-        horizontalInput = moveInput.x;
+        Movement();
+    }
+
+    private void Movement()
+    {
+        horizontalInput = inputActions.Player.Movement.ReadValue<Vector2>().x;
         rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocityY);
     }
 
-    private void OnMovement(InputValue inputValue)
+    private void Jump(InputAction.CallbackContext ctx)
     {
-        moveInput = inputValue.Get<Vector2>();
-    }
-
-    private void OnJump()
-    {
-        if (jumpCount < 2)
+        if (ctx.performed && jumpCount < 2)
         {
             rb.AddForceY(jumpForce);
             jumpCount++;
