@@ -7,7 +7,7 @@ public class playerController : MonoBehaviour
     private float moveSpeed = 10f,
     jumpForce = 6f,
     groundDetectLength = 1.5f,
-    sprintMultiplier = 2f;
+    sprintSpeed = 20f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private int jumpCount;
@@ -21,7 +21,6 @@ public class playerController : MonoBehaviour
         inputActions = new IA_Player();
         inputActions.Player.Movement.Enable();
         inputActions.Player.Sprint.Enable();
-        inputActions.Player.Sprint.performed += Sprint;
         inputActions.Player.Jump.Enable();
         inputActions.Player.Jump.performed += Jump;
     }
@@ -30,7 +29,6 @@ public class playerController : MonoBehaviour
     {
         inputActions.Player.Movement.Disable();
         inputActions.Player.Sprint.Disable();
-        inputActions.Player.Sprint.performed -= Sprint;
         inputActions.Player.Jump.Disable();
         inputActions.Player.Jump.performed -= Jump;
     }
@@ -54,14 +52,27 @@ public class playerController : MonoBehaviour
     private void Movement()
     {
         horizontalInput = inputActions.Player.Movement.ReadValue<Vector2>().x;
-        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocityY);
+        if (!isSprinting())
+        {
+            rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocityY);
+        }
+        else
+        {
+            rb.linearVelocity = new Vector2(horizontalInput * sprintSpeed, rb.linearVelocityY); 
+        }
+        
     }
 
-    private void Sprint(InputAction.CallbackContext ctx)
+    private bool isSprinting()
     {
-        if (ctx.performed)
+        float sprintInput = inputActions.Player.Sprint.ReadValue<float>();
+        if (sprintInput > 0 && Grounded())
         {
-            moveSpeed *= sprintMultiplier;
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
