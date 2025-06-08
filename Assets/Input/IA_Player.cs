@@ -53,6 +53,15 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Melee"",
+                    ""type"": ""Button"",
+                    ""id"": ""eb8d9edf-c3f9-464c-8972-adadb9c955b2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -187,6 +196,17 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4689dd8b-b711-4c08-a58c-0fa3c3d19ae2"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Melee"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -198,6 +218,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+        m_Player_Melee = m_Player.FindAction("Melee", throwIfNotFound: true);
     }
 
     ~@IA_Player()
@@ -267,6 +288,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Sprint;
+    private readonly InputAction m_Player_Melee;
     public struct PlayerActions
     {
         private @IA_Player m_Wrapper;
@@ -274,6 +296,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+        public InputAction @Melee => m_Wrapper.m_Player_Melee;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -292,6 +315,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
+            @Melee.started += instance.OnMelee;
+            @Melee.performed += instance.OnMelee;
+            @Melee.canceled += instance.OnMelee;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -305,6 +331,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
+            @Melee.started -= instance.OnMelee;
+            @Melee.performed -= instance.OnMelee;
+            @Melee.canceled -= instance.OnMelee;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -327,5 +356,6 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnMelee(InputAction.CallbackContext context);
     }
 }

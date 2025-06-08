@@ -12,6 +12,7 @@ public class playerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private int jumpCount;
     [SerializeField] private Transform groundDetect;
+    [SerializeField] private GameObject weapon;
     [SerializeField] private int playerHP = 4;
     private RaycastHit2D hit;
     float horizontalInput, verticalInput;
@@ -25,6 +26,9 @@ public class playerController : MonoBehaviour
         inputActions.Player.Sprint.Enable();
         inputActions.Player.Jump.Enable();
         inputActions.Player.Jump.performed += Jump;
+        inputActions.Player.Melee.Enable();
+        inputActions.Player.Melee.performed += Melee;
+        inputActions.Player.Melee.canceled += Melee;
     }
 
     void OnDisable()
@@ -33,6 +37,8 @@ public class playerController : MonoBehaviour
         inputActions.Player.Sprint.Disable();
         inputActions.Player.Jump.Disable();
         inputActions.Player.Jump.performed -= Jump;
+        inputActions.Player.Melee.Disable();
+        inputActions.Player.Melee.performed -= Melee;
     }
 
     private void Update()
@@ -144,6 +150,18 @@ public class playerController : MonoBehaviour
         else
         {
             climbable = false;
+        }
+    }
+
+    private void Melee(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            weapon.SetActive(true);
+        }
+        else if (ctx.canceled)
+        {
+            weapon.SetActive(false);
         }
     }
 }
