@@ -6,6 +6,7 @@ TagManager:
   tags:
   - obstacle
   - healing
+  - ladder
   layers:
   - Default
   - TransparentFX

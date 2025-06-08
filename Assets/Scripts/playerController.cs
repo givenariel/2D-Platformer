@@ -14,7 +14,8 @@ public class playerController : MonoBehaviour
     [SerializeField] private Transform groundDetect;
     [SerializeField] private int playerHP = 4;
     private RaycastHit2D hit;
-    float horizontalInput;
+    float horizontalInput, verticalInput;
+    private bool climbable;
     IA_Player inputActions;
 
     private void OnEnable()
@@ -53,6 +54,7 @@ public class playerController : MonoBehaviour
     private void Movement()
     {
         horizontalInput = inputActions.Player.Movement.ReadValue<Vector2>().x;
+        verticalInput = inputActions.Player.Movement.ReadValue<Vector2>().y;
         if (!isSprinting())
         {
             rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocityY);
@@ -60,6 +62,11 @@ public class playerController : MonoBehaviour
         else
         {
             rb.linearVelocity = new Vector2(horizontalInput * sprintSpeed, rb.linearVelocityY);
+        }
+
+        if (climbable)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocityX, verticalInput * sprintSpeed);
         }
 
     }
@@ -125,6 +132,18 @@ public class playerController : MonoBehaviour
         if (collision.collider.CompareTag("healing"))
         {
             playerHP += 1;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("ladder"))
+        {
+            climbable = true;
+        }
+        else
+        {
+            climbable = false;
         }
     }
 }
