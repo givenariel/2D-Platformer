@@ -62,6 +62,15 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shooting"",
+                    ""type"": ""Button"",
+                    ""id"": ""4f55e27c-8859-4d41-b104-dd8959c57630"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -207,6 +216,17 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
                     ""action"": ""Melee"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9e403825-798d-4d5f-8513-b78b9e8275cb"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shooting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -219,6 +239,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Melee = m_Player.FindAction("Melee", throwIfNotFound: true);
+        m_Player_Shooting = m_Player.FindAction("Shooting", throwIfNotFound: true);
     }
 
     ~@IA_Player()
@@ -289,6 +310,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Melee;
+    private readonly InputAction m_Player_Shooting;
     public struct PlayerActions
     {
         private @IA_Player m_Wrapper;
@@ -297,6 +319,7 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Melee => m_Wrapper.m_Player_Melee;
+        public InputAction @Shooting => m_Wrapper.m_Player_Shooting;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -318,6 +341,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @Melee.started += instance.OnMelee;
             @Melee.performed += instance.OnMelee;
             @Melee.canceled += instance.OnMelee;
+            @Shooting.started += instance.OnShooting;
+            @Shooting.performed += instance.OnShooting;
+            @Shooting.canceled += instance.OnShooting;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -334,6 +360,9 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
             @Melee.started -= instance.OnMelee;
             @Melee.performed -= instance.OnMelee;
             @Melee.canceled -= instance.OnMelee;
+            @Shooting.started -= instance.OnShooting;
+            @Shooting.performed -= instance.OnShooting;
+            @Shooting.canceled -= instance.OnShooting;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -357,5 +386,6 @@ public partial class @IA_Player: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnMelee(InputAction.CallbackContext context);
+        void OnShooting(InputAction.CallbackContext context);
     }
 }

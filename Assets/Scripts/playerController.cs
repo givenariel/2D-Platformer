@@ -14,6 +14,8 @@ public class playerController : MonoBehaviour
     [SerializeField] private Transform groundDetect;
     [SerializeField] private GameObject weapon;
     [SerializeField] private int playerHP = 4;
+    [SerializeField] private GameObject bullet;
+    [SerializeField] private Transform bulletPos;
     private RaycastHit2D hit;
     float horizontalInput, verticalInput;
     private bool climbable;
@@ -29,6 +31,8 @@ public class playerController : MonoBehaviour
         inputActions.Player.Melee.Enable();
         inputActions.Player.Melee.performed += Melee;
         inputActions.Player.Melee.canceled += Melee;
+        inputActions.Player.Shooting.Enable();
+        inputActions.Player.Shooting.performed += Shoot;
     }
 
     void OnDisable()
@@ -39,6 +43,8 @@ public class playerController : MonoBehaviour
         inputActions.Player.Jump.performed -= Jump;
         inputActions.Player.Melee.Disable();
         inputActions.Player.Melee.performed -= Melee;
+        inputActions.Player.Shooting.Enable();
+        inputActions.Player.Shooting.performed -= Shoot;
     }
 
     private void Update()
@@ -162,6 +168,14 @@ public class playerController : MonoBehaviour
         else if (ctx.canceled)
         {
             weapon.SetActive(false);
+        }
+    }
+
+    private void Shoot(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            Instantiate(bullet, bulletPos.position, bulletPos.rotation);
         }
     }
 }
