@@ -7,9 +7,9 @@ public class projectile : MonoBehaviour
 
     void Update()
     {
-        bullet.Translate(transform.right * bulletSpeed * Time.deltaTime);
+            bullet.Translate(transform.right * bulletSpeed * Time.deltaTime);
     }
-
+    
     void OnCollisionEnter2D(Collision2D collision)
     {
         Destroy(this.gameObject);
