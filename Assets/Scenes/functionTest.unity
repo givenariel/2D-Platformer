@@ -287,6 +287,7 @@ Transform:
   m_Children:
   - {fileID: 970705977}
   - {fileID: 1024332284}
+  - {fileID: 1301631186}
   - {fileID: 549121315}
   - {fileID: 1642586746}
   m_Father: {fileID: 0}
@@ -333,17 +334,24 @@ MonoBehaviour:
   moveSpeed: 5
   jumpForce: 15
   groundDetectLength: 1
+  wallDetectLength: 1.5
   sprintSpeed: 20
   rb: {fileID: 70949844}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 64
   jumpCount: 0
   groundDetect: {fileID: 1024332284}
+  wallDetect: {fileID: 1301631186}
   weapon: {fileID: 549121313}
   playerHP: 4
   bullet: {fileID: 6416160833726130208, guid: 52b491dd6db257c4dbea5ceefa1c3ba7, type: 3}
   bulletPos: {fileID: 1642586746}
+  climbable: 0
+  onWall: 0
 --- !u!61 &70949848
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -354,7 +362,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: faf0b6fc7afbbf441b764a21bb9f151c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1173,7 +1181,7 @@ GameObject:
   - component: {fileID: 1122164164}
   - component: {fileID: 1122164163}
   - component: {fileID: 1122164165}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Ground (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1296,6 +1304,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &1301631185
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1301631186}
+  m_Layer: 2
+  m_Name: wallDetect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1301631186
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1301631185}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.054, y: -0.253, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 70949843}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1430096699
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,7 +1352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &1430096700
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1445,6 +1484,10 @@ PrefabInstance:
     - target: {fileID: 3780533548031234600, guid: 52b491dd6db257c4dbea5ceefa1c3ba7, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.79
+      objectReference: {fileID: 0}
+    - target: {fileID: 6416160833726130208, guid: 52b491dd6db257c4dbea5ceefa1c3ba7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8719201255199748175, guid: 52b491dd6db257c4dbea5ceefa1c3ba7, type: 3}
       propertyPath: m_LocalPosition.x

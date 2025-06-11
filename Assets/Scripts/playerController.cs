@@ -7,18 +7,21 @@ public class playerController : MonoBehaviour
     private float moveSpeed = 10f,
     jumpForce = 6f,
     groundDetectLength = 1.5f,
+    wallDetectLength = 1.5f,
     sprintSpeed = 20f;
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask groundLayer,
+    wallLayer;
     [SerializeField] private int jumpCount;
-    [SerializeField] private Transform groundDetect;
+    [SerializeField] private Transform groundDetect,
+    wallDetect;
     [SerializeField] private GameObject weapon;
     [SerializeField] private int playerHP = 4;
     [SerializeField] private GameObject bullet;
     [SerializeField] private Transform bulletPos;
     private RaycastHit2D hit;
     float horizontalInput, verticalInput;
-    private bool climbable;
+    [SerializeField] private bool climbable, onWall;
     IA_Player inputActions;
 
     private void OnEnable()
@@ -50,6 +53,8 @@ public class playerController : MonoBehaviour
     private void Update()
     {
         Grounded();
+        WallDetect();
+        wallSlide();
         Flip();
 
         if (Grounded())
@@ -115,6 +120,28 @@ public class playerController : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    private bool WallDetect()
+    {
+        hit = Physics2D.Raycast(wallDetect.position, wallDetect.right, wallDetectLength, wallLayer);
+        if (hit)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void wallSlide()
+    {
+        if (WallDetect() & !Grounded())
+        {
+            // rb.linearVelocity = new Vector2(rb.linearVelocityX, rb.linearVelocityY * -0.15f);
+            rb.linearVelocityY = -1f;
         }
     }
 
