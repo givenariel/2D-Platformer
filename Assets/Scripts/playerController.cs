@@ -61,6 +61,19 @@ public class playerController : MonoBehaviour
         {
             jumpCount = 0;
         }
+
+        if (WallDetect())
+        {
+            onWall = true;
+        }
+        else
+        {
+            onWall = false;
+        }
+        if (Input.GetKeyDown(KeyCode.W) && WallDetect() && !Grounded())
+        {
+            rb.AddForceY(jumpForce, ForceMode2D.Impulse);
+        }
     }
 
     void FixedUpdate()
